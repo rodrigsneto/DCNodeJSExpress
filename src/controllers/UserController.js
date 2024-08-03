@@ -4,6 +4,27 @@ const list = (request, response) => {
     response.json(db)
 }
 
+const getById = (request, response) => {
+    let id = request.params.id
+    let users = db[id]
+
+    db[id] = {
+        ...users,
+        ...request.body
+    }
+
+    if(!users) {
+        response.status(404)
+        let msg = `Usuario ${id} não encontrado`
+        return response.json({
+            message: msg
+        })
+    }
+
+    response.json(db[id])
+
+}
+
 const create = (request, response) => {
     let body = request.body
     db.push(body)
@@ -21,15 +42,30 @@ const create = (request, response) => {
 
 const update = (request, response) => {
     let id = request.params.id
+    let users = db[id]
+
+    db[id] = {
+        ...users,
+        ...request.body
+    }
+
+    if(!users) {
+        response.status(404)
+        let msg = `Usuario ${id} não encontrado`
+        return response.json({
+            message: msg
+        })
+    }
 
 
     response.json({
-        message: "Atualizado com sucesso" + id
+        message: "Atualizado com sucesso " + id
     })
 }
 
 module.exports = {
     list,
     create,
-    update
+    update,
+    getById
 }
